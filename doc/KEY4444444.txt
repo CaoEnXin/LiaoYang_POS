@@ -1,0 +1,340 @@
+			//认证MAC
+			sCardNo = OtherModule.Supply00(OtherModule.CurToStr(cCardNo), 0, "0", 8);
+			sOnlyNo = OtherModule.Supply00(lOnlyNo.ToString(), 0, "0", 8).Substring(4);
+			sCityNo = OtherModule.Supply00(iCityNo.ToString(), 0, "0", 4);
+			
+			//计算MAC码
+			sTmp = sCardNo + sOnlyNo + sCityNo;
+			sCommand = "0088007" + Convert.ToString(iKeyNo - 1) + "08" + sTmp;
+			if (SAMReturnVal(Declare. lDevNo, sCommand, ref sRetStr) != "9000")
+			{
+				returnValue = false;
+				return returnValue;
+			}
+			sAuthCode = sRetStr.Substring(0, 8);
+			
+			//计算KAYB
+			if (sAuthCode == sAuthKey)
+			{
+				for (j = 0; j <= sSecNo.Length - 1; j++)
+				{
+					if (Convert.ToDouble(sSecNo.Substring(j + 1 - 1, 1) ) == 1)
+					{
+						sTmp = sCardNo + sOnlyNo + sAuthCode.Substring(0, 2) + OtherModule.Supply00(j.ToString(), 0, "0", 2);
+						sCommand = "0088005" + Convert.ToString(iKeyNo - 1) + "08" + sTmp;
+						if (SAMReturnVal(Declare. lDevNo, sCommand, ref sRetStr) != "9000")
+						{
+							returnValue = false;
+							return returnValue;
+						}
+						SecPW[j] = sRetStr.Substring(0, 12);
+					}
+				}
+			}
+			else
+			{
+				returnValue = false;
+				return returnValue;
+			}
+
+
+
+
+******************************
+
+		//装入密钥
+		public static bool LoadKey(int iMode, int SecNo, string sKey)
+		{
+			bool returnValue = false;
+			byte[] abKey = new byte[6];
+			int i;
+			
+			for (i = 0; i <= 5; i++)
+			{
+				abKey[i] = byte.Parse((sKey.Substring(i * 2 + 1 - 1, 2)),System.Globalization.NumberStyles.HexNumber);
+			}
+            if (Declare.Load_key(Declare.lDevNo, (byte)iMode, (byte)SecNo, ref abKey[0]) != 0)
+			{
+				returnValue = false;
+			}
+			else
+			{
+				returnValue = true;
+			}
+			return returnValue;
+		}
+/****************************************************************************
+* Function: CalcChkBytes													*
+****************************************************************************/
+void CalcChkBytes(void)
+{
+  DWORD i,j;
+  BYTE bcc;
+  WORD crc;
+
+  dwLen=HEADER+cBuffer[2];
+  if(ChkBytes==BCC_CHKBYTES)
+  {
+    bcc=0;
+    for(i=0;i<dwLen;i++)
+	{
+      bcc^=cBuffer[i];
+	}
+    cBuffer[dwLen]=bcc;
+  }else //CRC16
+  {
+    crc=CRC_PRESET;
+    for(i=0;i<dwLen;i++)
+	{
+      crc^=(WORD)cBuffer[i]<<8;
+      for(j=0;j<8;j++)
+	  {
+        if(crc&0x8000)
+		{
+          crc=(crc<<1)^CRC_POLYNOM;
+		}else{
+          crc=(crc<<1);
+		}
+	  }
+	}
+    cBuffer[dwLen]  =(BYTE)(crc>>8);
+    cBuffer[dwLen+1]=(BYTE)crc;
+  }
+  dwLen+=ChkBytes;
+}
+/****************************************************************************
+* Function:     COM_Load_key0                                               *
+****************************************************************************/
+BYTE __stdcall COM_Load_key0(HANDLE hCOMDevice,BYTE mode, BYTE secnr, BYTE *n_key)
+{
+  BYTE  RetVal=0, i, *t_key;
+  static BYTE tKeyTable[16][6]={{0xbd,0xde,0x6f,0x37,0x83,0x83},
+                		{0x14,0x8a,0xc5,0xe2,0x28,0x28},
+				{0x7d,0x3e,0x9f,0x4f,0x95,0x95},
+				{0xad,0xd6,0x6b,0x35,0xc8,0xc8},
+				{0xdf,0xef,0x77,0xbb,0xe4,0xe4},
+				{0x09,0x84,0x42,0x21,0xbc,0xbc},
+				{0x5f,0xaf,0xd7,0xeb,0xa5,0xa5},
+				{0x29,0x14,0x8a,0xc5,0x9f,0x9f},
+				{0xfa,0xfd,0xfe,0x7f,0xff,0xff},
+				{0x73,0x39,0x9c,0xce,0xbe,0xbe},
+				{0xfc,0x7e,0xbf,0xdf,0xbf,0xbf},
+		        	{0xcf,0xe7,0x73,0x39,0x51,0x51},
+				{0xf7,0xfb,0x7d,0x3e,0x5a,0x5a},
+				{0xf2,0x79,0x3c,0x1e,0x8d,0x8d},
+			        {0xcf,0xe7,0x73,0x39,0x45,0x45},
+				{0xb7,0xdb,0x6d,0xb6,0x7d,0x7d} };
+  t_key=tKeyTable[secnr];
+  cBuffer[0]=++cSeqNr;
+  cBuffer[1]=0x4c;
+  cBuffer[2]=14;
+  cBuffer[3]=mode;
+  cBuffer[4]=secnr;
+  for(i=0;i<6;i++)
+  {
+    cBuffer[5+i]=t_key[i];
+  }
+  for(i=0;i<6;i++)
+  {
+    cBuffer[11+i]=n_key[i];
+  }
+  CalcChkBytes();
+  RetVal=COM_SndCmd(hCOMDevice);
+  if(!RetVal)
+  {
+    RetVal=COM_RcvDat(hCOMDevice);
+    if(!RetVal)
+    {
+     RetVal=cBuffer[1];
+    }
+  }
+  return RetVal;
+}
+/****************************************************************************
+* Function: COM_SndCmd                     				    *
+****************************************************************************/
+BYTE COM_SndCmd(HANDLE hCOMDevice)
+{
+  DWORD i;
+  BYTE State=RECV_DLE,cTempBuffer[10],Attempt;
+  BOOL fSuccess;
+  DWORD dwBytesRead,dwBytesWritten,NewTick,OldTick;
+
+  OldTick=GetTickCount();
+  do{
+    NewTick=GetTickCount();
+  }while(NewTick-OldTick<2);
+  SetupComm( hCOMDevice, 4096, 4096 ) ;
+  PurgeComm( hCOMDevice, PURGE_TXABORT | PURGE_RXABORT |
+  	           PURGE_TXCLEAR | PURGE_RXCLEAR ) ;
+
+  fSuccess=WriteFile( hCOMDevice, (LPSTR)&STX, 1, &dwBytesWritten, NULL);
+    if(!fSuccess) return MIS_WRITECOMM;
+  Attempt=3;
+  while(1)
+  {
+    fSuccess = ReadFile( hCOMDevice, (LPSTR)&cTempBuffer,1, &dwBytesRead, NULL) ;
+      if(!fSuccess)return MIS_READCOMM;
+    if(dwBytesRead==0)
+    {
+      if(--Attempt>0)
+      {
+        fSuccess=WriteFile( hCOMDevice, (LPSTR)&STX, 1, &dwBytesWritten, NULL);
+          if(!fSuccess) return MIS_WRITECOMM;
+      }else
+        return MIS_TIMEOUT;
+    }
+    switch(State)
+    {
+      case RECV_DLE:
+        if(cTempBuffer[0]==DLE[0])
+	{
+	  State=RECV_DLE_NAK;
+          for(i=0;i<dwLen;i++)
+          {
+            fSuccess=WriteFile( hCOMDevice, &cBuffer[i], 1, &dwBytesWritten, NULL);
+            if(cBuffer[i]==DLE[0])
+            {
+              fSuccess=WriteFile( hCOMDevice, &cBuffer[i], 1, &dwBytesWritten, NULL);
+            }
+          }
+          fSuccess=WriteFile( hCOMDevice, (LPSTR)&DLE, 1, &dwBytesWritten, NULL);
+          fSuccess=WriteFile( hCOMDevice, (LPSTR)&ETX, 1, &dwBytesWritten, NULL);
+          if(!fSuccess) return MIS_WRITECOMM;
+	}else if(--Attempt>0)
+	{
+	  fSuccess=WriteFile( hCOMDevice, (LPSTR)&STX, 1, &dwBytesWritten, NULL);
+	    if(!fSuccess) return MIS_WRITECOMM;
+	}else{
+	  return MIS_SERERR;
+	}
+	break;
+      case RECV_DLE_NAK:
+        if(cTempBuffer[0]==DLE[0])
+        {
+	  return MIS_OK;
+	}else if(--Attempt>0)
+	{
+          State=RECV_DLE;
+	  fSuccess=WriteFile( hCOMDevice, (LPSTR)&STX, 1, &dwBytesWritten, NULL);
+	  if(!fSuccess) return MIS_WRITECOMM;
+	}else{
+          return MIS_SERERR;
+	}
+	break;
+      }  //end switch
+  }  //end while 1
+}
+/****************************************************************************
+* Function: COM_RcvDat     				                    *
+****************************************************************************/
+BYTE COM_RcvDat(HANDLE hCOMDevice)
+{
+  DWORD i,j;
+  BYTE MIFS_Err,State=RECV_STX,cTempBuffer[10];
+  WORD MIFS_Check;
+  BOOL fSuccess;
+  DWORD RPtr,dwBytesRead,dwBytesWritten;
+
+  while(1)
+  {
+    fSuccess = ReadFile( hCOMDevice, (LPSTR)&cTempBuffer,1, &dwBytesRead, NULL) ;
+      if(!fSuccess)return MIS_READCOMM;
+      if(dwBytesRead==0) return MIS_TIMEOUT;
+    switch(State)
+    {
+      case RECV_STX:
+        if(cTempBuffer[0]==STX[0])
+    	{
+          State=RECV_DATA;
+    	  RPtr=0;
+    	  fSuccess=WriteFile( hCOMDevice, (LPSTR)&DLE, 1, &dwBytesWritten, NULL);
+          if(!fSuccess) return MIS_WRITECOMM;
+      	}
+      	else
+      	{
+      	  fSuccess=WriteFile( hCOMDevice, (LPSTR)&NAK, 1, &dwBytesWritten, NULL);
+          if(!fSuccess) return MIS_WRITECOMM;
+      	}
+        break;
+      case RECV_DATA:
+        if(cTempBuffer[0]==DLE[0])
+        {
+	  State=RECV_DATA_DLE;
+	}
+	else{
+	  if((BYTE)RPtr<HEADER+MAXDATA+1+ChkBytes)
+	  {
+	    cBuffer[RPtr++]=cTempBuffer[0];
+	  }else{
+            return MIS_RS232ERR;
+	  }
+	 }
+         break;
+      case RECV_DATA_DLE:
+        if(cTempBuffer[0]==DLE[0])
+      	{
+          State=RECV_DATA;
+          if((BYTE)RPtr<HEADER+MAXDATA+1+ChkBytes)
+      	  {
+      	    cBuffer[RPtr++]=DLE[0];
+      	  }
+      	  else
+	  {
+            return MIS_RS232ERR;
+	  }
+	}else if(cTempBuffer[0]==ETX[0])
+	{
+	  if((BYTE)RPtr<(HEADER+ChkBytes)||(BYTE)RPtr>(HEADER+MAXDATA+ChkBytes) )
+	  {
+	    MIFS_Err=MIS_BYTESERR;
+	  }
+	  else if((cBuffer[2]+HEADER+ChkBytes)!=(BYTE)RPtr)
+	  {
+	    MIFS_Err=MIS_BYTESERR;
+	  }
+	  else
+	  {
+	    if(ChkBytes==BCC_CHKBYTES)
+	    {
+	      MIFS_Check=0;
+	      for(i=0;i<RPtr;i++)
+	      {
+	        MIFS_Check^=(WORD)cBuffer[i];
+	      }
+	    }else{
+  	      MIFS_Check=CRC_PRESET;
+	      for(i=0;i<RPtr;i++)
+	      {
+	        MIFS_Check^=(WORD)cBuffer[i]<<8;
+		for(j=0;j<8;j++)
+		{
+		  if(MIFS_Check&0x8000)
+		  {
+		    MIFS_Check=(MIFS_Check<<1)^CRC_POLYNOM;
+		  }else{
+		    MIFS_Check=(MIFS_Check<<1);
+		  }
+        	}
+	      }
+	    }
+	    if(MIFS_Check!=0)
+	    {
+              MIFS_Err=MIS_CHECKERR;
+	    }
+	    else
+	    {
+	      fSuccess=WriteFile( hCOMDevice, (LPSTR)&DLE, 1, &dwBytesWritten, NULL);
+	      if(!fSuccess) return MIS_WRITECOMM;
+              return MIS_OK;
+	    }
+	  }
+	  State=RECV_STX;
+	  fSuccess=WriteFile( hCOMDevice, (LPSTR)&NAK, 1, &dwBytesWritten, NULL);
+	    if(!fSuccess) return MIS_WRITECOMM;
+          return MIFS_Err;
+	}
+	break;
+    }   //end switch(State)
+  }     //end while
+}

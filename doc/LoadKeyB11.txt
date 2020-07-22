@@ -1,0 +1,85 @@
+       public static byte LoadKeyB(byte secnr)
+        {
+            byte[] data = new byte[16];
+            byte[] cmd = new byte[80];
+            byte[] ResCode = new byte[200];
+            byte[] KeyA = new byte[6];
+            byte[] MAC = new byte[4];
+            byte[] Snr = new byte[4];
+            byte[] TempSnr = new byte[4];
+            byte[] KeyA0 = new byte[6] { 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5 };
+            byte size, RetValue, lenr;
+            UInt32 snr;
+            Int16 type;
+            UInt16 sw;
+            int i;
+
+            RetValue = Card.COM_Select_Pipe(Card.hcom, 1);//–°ø®
+            if (RetValue != 0)
+            {
+                MessageBox.Show("—°‘ÒÕ®µ¿¥ÌŒÛ£°");
+                Card.COM_Close(out Card.hcom);
+                return 1;
+            }
+
+            if (secnr == 0)
+            {
+                if (Card.COM_Request(Card.hcom, Card.ALL, out type) != 0)
+                    if (Card.COM_Request(Card.hcom, Card.ALL, out type) != 0) return 1;
+                RetValue = Card.COM_Anticoll(Card.hcom, out snr);
+                RetValue = Card.COM_Select(Card.hcom, snr, out size);
+                RetValue = Card.COM_Authentication(Card.hcom, 0, snr, KeyA0, 0);
+                RetValue = Card.COM_Read(Card.hcom, 1, Card.SecTag);
+            }
+
+            if (Card.COM_Request(Card.hcom, Card.ALL, out type) != 0)
+                if (Card.COM_Request(Card.hcom, Card.ALL, out type) != 0) return 1;
+            RetValue = Card.COM_Anticoll(Card.hcom, out snr);
+            RetValue = Card.COM_Select(Card.hcom, snr, out size);
+            TempSnr = BitConverter.GetBytes(snr);
+            Snr[0] = TempSnr[0];
+            Snr[1] = TempSnr[1];
+            Snr[2] = TempSnr[2];
+            Snr[3] = TempSnr[3];
+
+            KeyA[0] = Snr[0];
+            KeyA[1] = Snr[1];
+            KeyA[2] = Snr[2];
+            KeyA[3] = Snr[3];
+            KeyA[4] = Snr[0];
+            KeyA[5] = Snr[1];
+
+            RetValue = Card.COM_Authentication(Card.hcom, 0, snr, KeyA, 4);
+            RetValue = Card.COM_Read(Card.hcom, 4, data);
+
+            sw = Card.COM_CPUC_Reset(Card.hcom, out lenr, ResCode);
+            if (sw != 0) return 1;
+
+            //¥”ƒ∏ø®÷–∂¡MAC√‹‘ø∫Õœ˚∑—DES√‹‘ø
+            cmd[0] = 0x0;
+            cmd[1] = 0x88;
+            //cmd[1] = 0x82;
+            cmd[2] = 0x0;
+            cmd[3] = 0x0;
+            cmd[4] = 0x08;
+            cmd[5] = Snr[0];
+            cmd[6] = Snr[1];
+            cmd[7] = Snr[2];
+            cmd[8] = Snr[3];
+            cmd[9] = data[6];
+            cmd[10] = data[7];
+            cmd[11] = data[8];
+            cmd[12] = Card.SecTag[secnr];
+            sw = Card.COM_CPUC_Cmd(Card.hcom, 13, cmd, out lenr, ResCode);
+            if (sw != 0x9000)
+            {
+                //MessageBox.Show("∂¡ƒ∏ø®DES√‹‘ø¥ÌŒÛ£°");
+                return 1;
+            }
+            for (i = 0; i < 6; i++) Card.Kb[i] = ResCode[i];
+            return 0;
+
+            //for (i = 0; i < 6; i++) Card.Kb[i] = 0xFF;
+            //return 0;
+
+        }

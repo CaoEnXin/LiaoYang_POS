@@ -1,0 +1,70 @@
+../obj/Src/MathLib.o: ../Src/MathLib.c \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/stdio.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/features.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/uClibc_config.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/uClibc_arch_features.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/sys/cdefs.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/include/stddef.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/types.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/wordsize.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/kernel_types.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/typesizes.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/pthreadtypes.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/sched.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/uClibc_stdio.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/wchar.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/wchar.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/uClibc_mutex.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/pthread.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/sched.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/time.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/time.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/uClibc_clk_tck.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/signal.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/sigset.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/initspin.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/sigthread.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/uClibc_pthread.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/include/stdarg.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/stdio_lim.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/stdlib.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/sys/types.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/endian.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/endian.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/sys/select.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/select.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/sys/sysmacros.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/alloca.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/string.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/stdint.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/ctype.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/uClibc_touplow.h \
+  ../Src/MathLib.h ../Src/glbvar.h ../Src/posapi.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/netinet/in.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/sys/socket.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/sys/uio.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/uio.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/socket.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/limits.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/include/limits.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/posix1_lim.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/local_lim.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/linux/limits.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/uClibc_local_lim.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/posix2_lim.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/sockaddr.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/asm/socket.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/asm/sockios.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/in.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/byteswap.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/errno.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/errno.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/bits/errno_values.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/arpa/inet.h \
+  /cygdrive/c/ArmToolchain/bin/../lib/gcc/arm-linux-uclibc/4.1.2/../../../../include/net/if.h \
+  ../Src/modem.h ../Src/modem_iface.h ../Src/barcode.h \
+  ../SDK/inc/pn512_drv.h ../Src/terstruc.h ../Src/posmacro.h \
+  ../Src/st8583.h ../Src/pack8583.h ../Src/Commlib.h ../Src/emvapi.h \
+  ../Src/PosLib.h ../Src/Display.h ../Src/wireless.h ../Src/tmslib.h \
+  ../Src/ChkOption.h ../Src/posappapi.h ../Src/Rs232lib.h \
+  ../Src/New8110_ICC.h

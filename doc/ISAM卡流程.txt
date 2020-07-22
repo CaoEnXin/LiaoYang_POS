@@ -1,0 +1,110 @@
+  sCardNo = Supply00(CurToStr(cCardNo), 0, "0", 8)
+    sOnlyNo = Mid(Supply00(CStr(lOnlyNo), 0, "0", 8), 5)
+    sCityNo = Supply00(CStr(iCityNo), 0, "0", 4)
+
+
+sTmp = sCardNo & sOnlyNo & Mid(sAuthCode, 1, 2) & Supply00(CStr(j), 0, "0", 2)
+                    sCommand = "0088005" & CStr(iKeyNo - 1) & "08" & sTmp
+                    If SAMReturnVal(lDevNo, sCommand, sRetStr) <> "9000" Then
+                        GetSecPW = False
+                        Exit Function
+                    End If
+                    SecPW(j) = Mid(sRetStr, 1, 12) 
+
+
+sCardNo 芯片号
+sOnlyNo流水号
+sCityNo城市代码
+sAuthCode卡里的MAC码 
+
+
+       sCommand = "00 20 00 41 08" & Supply00(StrToHexAsc(sCardPW), 0, "0", 16)
+        If ReturnVal(lDevNo, sCommand, sRetStr) <> "9000" Then
+            AuthBigSmall = False
+            Exit Function
+        End If
+        
+        '认证开发商密钥
+        sCommand = "00200042082000070120001101"
+        If ReturnVal(lDevNo, sCommand, sRetStr) <> "9000" Then
+            AuthBigSmall = False
+            Exit Function
+        End If
+        
+        
+        
+        '大小卡相互认证
+    '小
+        '取随机数
+        sCommand = "0084000008"
+        If SAMReturnVal(lDevNo, sCommand, sRetStr) <> "9000" Then
+            AuthBigSmall = False
+            Exit Function
+        End If
+        sTmp = sRetStr
+    '大
+        '内部认证
+        sCommand = "0088001108" & sTmp
+        If ReturnVal(lDevNo, sCommand, sRetStr) <> "9000" Then
+            AuthBigSmall = False
+            Exit Function
+        End If
+        sTmp = sRetStr
+    '小
+        '外部认证
+        sCommand = "0082002208" & sTmp
+        If SAMReturnVal(lDevNo, sCommand, sRetStr) <> "9000" Then
+            AuthBigSmall = False
+            Exit Function
+        End If
+    '大
+        '取随机数
+        sCommand = "0084000008"
+        If ReturnVal(lDevNo, sCommand, sRetStr) <> "9000" Then
+            AuthBigSmall = False
+            Exit Function
+        End If
+        sTmp = sRetStr
+    '小
+        '内部认证
+        sCommand = "0088001108" & sTmp
+        If SAMReturnVal(lDevNo, sCommand, sRetStr) <> "9000" Then
+            AuthBigSmall = False
+            Exit Function
+        End If
+        sTmp = sRetStr
+    '大
+        '外部认证
+        sCommand = "0082002108" & sTmp
+        If ReturnVal(lDevNo, sCommand, sRetStr) <> "9000" Then
+            AuthBigSmall = False
+            Exit Function
+        End If 
+
+ SAMReturnVal是对小卡， ReturnVal是对大卡 
+
+这是读小卡 
+        sCommand = "00B082000C"
+        sCPUState = SAMReturnVal(lDevNo, sCommand, sReturnVal)
+        If sCPUState <> "9000" Then
+            ReadSamCardRec = False
+            Exit Function
+        End If
+        iCardType = CInt(Mid(sReturnVal, 21))
+        sReturnVal = HexAscToStr(sReturnVal)
+        sCardNo = Mid(sReturnVal, 1, 10) 
+
+这是读大卡 
+        sCommand = "00B082000C"
+        sCPUState = ReturnVal(lDevNo, sCommand, sReturnVal)
+        If sCPUState <> "9000" Then
+            ReadCardRec = False
+            Exit Function
+        End If
+        iCardType = CInt(Mid(sReturnVal, 21))
+        sReturnVal = HexAscToStr(sReturnVal)
+        sCardNo = Mid(sReturnVal, 1, 10)
+
+
+
+
