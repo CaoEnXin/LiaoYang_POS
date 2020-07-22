@@ -9,6 +9,7 @@ ID2
 广东省
 纪检部
 男
+<<<<<<< HEAD
 
-这是master
+这是master和dev
 >>>>>>> dev
